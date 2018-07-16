@@ -1,0 +1,174 @@
+<style>
+    .text_center {
+        text-align: center;
+    }
+
+    .main-content {
+        background-image: url('assets/img/bg.jpg');
+    }
+
+    .cell {
+        font-size: 10px;
+    }
+
+    .comodin::before {
+        font-size: 8px !important;
+        color: #f96332 !important;
+    }
+
+    .comodin-scored {
+        color: green;
+    }
+
+    .comodin-missed {
+        color: #f96332;
+    }
+</style>
+
+<div class="panel-header panel-header-sm">
+</div>
+<div class="main-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"> Partiditos</h4>
+                    <p></p>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class=" text-primary">
+                                <th class="text-center">
+                                    Pos.
+                                </th>
+                                <th>
+                                    Quinielero
+                                </th>
+                                <th class="text-center">
+                                    Pts
+                                </th>
+                                <th class="text-center">
+                                    Com
+                                </th>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let p of participants; index as i" (click)="DoClick(p)">
+                                    <td class="text-center">{{i + 1}}</td>
+                                    <td>
+                                        {{p.Nombre}}
+                                    </td>
+                                    <td class="text-center">
+                                        <b>{{p.Puntos}}</b>
+                                    </td>
+                                    <td class="text-center">
+                                        <span *ngFor="let c of p.Comodines1eraRonda; index as i">
+                                            <i *ngIf="c.puntos > 0" class="now-ui-icons ui-1_check comodin-scored"></i>
+                                            <i *ngIf="c.puntos == 0" class="now-ui-icons ui-1_simple-remove comodin-missed"></i>
+                                        </span>
+                                        <span *ngIf="p.Comodines1eraRonda.length == 0">
+                                            -
+                                        </span>
+                                        <!-- {{p.Comodines1eraRonda.length}} / 4 -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Participant Selector -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title text-center">Detalle de Quinielero</h4>
+                    <div class="card-body">
+                        <select style="width:100%; border: 1px solid;" (change)="onChange($event.target.value)">
+                            <option>Escoja un participante...</option>
+                            <option *ngFor="let p of participants; index as i" id="p.Nombre">{{p.Nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div id="stats" class="row">
+        <div class="col-md-12" *ngIf="selectedParticipant!=''">
+            <div class="card">
+                <div class="card-header text-center" style="padding-top: 0px">
+                    <h4 clas="card-title">
+                        {{selectedParticipant.Nombre}}
+                        <b>{{selectedParticipant.Puntos}} pts</b>
+                        &nbsp;&nbsp;&nbsp;
+                        <span *ngFor="let c of selectedParticipant.Comodines1eraRonda; index as i">
+                            <i *ngIf="c.puntos > 0" class="now-ui-icons ui-1_check comodin-scored"></i>
+                            <i *ngIf="c.puntos == 0" class="now-ui-icons ui-1_simple-remove comodin-missed"></i>
+                        </span>
+                        <span *ngIf="selectedParticipant.Comodines1eraRonda.length == 0">
+                            -
+                        </span>
+                    </h4>
+                </div>
+                <div class="card-body">
+
+                    <div *ngFor="let g of selectedParticipant.GroupedInfo; index as i">
+
+                        <h6 class="text-center">GRUPO {{g.Grupo}}</h6>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class=" text-primary">
+                                    <th class="text-center">
+                                    </th>
+                                    <th class="text-center">
+                                    </th>
+                                    <th class="text-center">
+                                    </th>
+                                    <th class="text-center">
+                                    </th>
+                                    <th class="text-center">
+                                        <b>Pts</b>
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of g.Pronosticos; index as i" style="width:100%">
+                                        <td class="cell text-center">
+                                            {{p.t1}}
+                                        </td>
+                                        <td class="cell text-center">
+                                            {{p.Marcador1}}
+                                        </td>
+                                        <td class="cell text-center">
+                                            {{p.Marcador2}}
+                                        </td>
+                                        <td class="cell text-center">
+                                            {{p.t2}}
+                                        </td>
+                                        <td class="cell text-center">
+                                            <b *ngIf="p.Available">
+                                                {{p.Puntos}}
+                                                <p style="font-size:8px; color:#f96332" *ngIf="p.Comodin != ''">( {{p.Comodin}} )</p>
+                                            </b>
+                                            <b *ngIf="!p.Available">
+                                                -
+                                            </b>
+                                        </td>
+                                        <!-- <div>({{p.Comodin}})</div> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

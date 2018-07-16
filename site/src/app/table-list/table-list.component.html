@@ -1,0 +1,308 @@
+<style>
+	.text_center {
+		text-align: center;
+	}
+	.main-content {
+		background-image: url('assets/img/bg.jpg');
+	}
+	.cell {
+		font-size: 10px;
+	}
+	.comodin::before {
+		font-size: 8px !important;
+		color: #f96332 !important;
+	}
+	.comodin-scored {
+		color: green;
+	}
+	.comodin-missed {
+		color: #f96332;
+	}
+	.match-selected {
+		background-color: #007bff;
+		border-radius: 10px;
+		color: white;
+		font-weight: bold;
+	}
+	.ganador-penales {
+		color: #f96332 !important
+	}
+</style>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<div class="panel-header panel-header-sm">
+</div>
+<div class="main-content" style="padding: 0 15px 15px !important;">
+
+	<div class="row">
+		<div class="col-md-12">
+			<ngb-tabset type="pills">
+				<ngb-tab>
+					<ng-template ngbTabTitle>
+						<b>Fabuloso</b> Ranking
+					</ng-template>
+					<ng-template ngbTabContent>
+						<!-- Ranking -->
+						<div class="row">
+							<div class="col-md-12">
+								<div class="card" style="margin-top:10px;">
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="table">
+												<thead class=" text-primary">
+													<th class="text-center">
+														Pos.
+													</th>
+													<th>
+														Quinielero
+													</th>
+													<th class="text-center">
+														Pts
+													</th>
+													<th class="text-center">
+														Com
+													</th>
+												</thead>
+												<tbody>
+													<tr *ngFor="let p of participants; index as i" (click)="DoClick(p)">
+														<td class="text-center">{{i + 1}}</td>
+														<td>
+															{{p.Nombre}}
+														</td>
+														<td class="text-center">
+															<b>{{p.Puntos}}</b>
+														</td>
+														<td class="text-center">
+															<span *ngFor="let c of p.ComodinesSemi; index as i">
+																<i *ngIf="c.puntos > 0" class="now-ui-icons ui-1_check comodin-scored"></i>
+																<i *ngIf="c.puntos == 0" class="now-ui-icons ui-1_simple-remove comodin-missed"></i>
+															</span>
+															<span *ngIf="p.ComodinesSemi.length == 0">
+																-
+															</span>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Participant Selector -->
+						<div class="row">
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<h4 class="card-title text-center">Detalle de Quinielero</h4>
+										<div class="card-body">
+											<select style="width:100%; border: 1px solid;" (change)="onChange($event.target.value)">
+												<option>Escoja un participante...</option>
+												<option *ngFor="let p of participants; index as i" id="p.Nombre">{{p.Nombre}}</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- Stats -->
+						<div id="stats" class="row">
+							<div class="col-md-12" *ngIf="selectedParticipant!=''">
+								<div class="card">
+									<div class="card-header text-center" style="padding-top: 0px">
+										<h4 clas="card-title">
+											{{selectedParticipant.Nombre}}
+											<b>{{selectedParticipant.Puntos}} pts</b>
+											&nbsp;&nbsp;&nbsp;
+											<span *ngFor="let c of selectedParticipant.ComodinesSemi; index as i">
+												<i *ngIf="c.puntos > 0" class="now-ui-icons ui-1_check comodin-scored"></i>
+												<i *ngIf="c.puntos == 0" class="now-ui-icons ui-1_simple-remove comodin-missed"></i>
+											</span>
+											<span *ngIf="selectedParticipant.ComodinesSemi.length == 0">
+												-
+											</span>
+										</h4>
+										<p style="font-size: 11px;">
+											Comodines 4tos:
+											<span *ngFor="let c of selectedParticipant.Comodines4tos; index as i">
+												<i *ngIf="c.puntos > 0" class="now-ui-icons ui-1_check comodin-scored"></i>
+												<i *ngIf="c.puntos == 0" class="now-ui-icons ui-1_simple-remove comodin-missed"></i>
+											</span>
+											<span *ngIf="selectedParticipant.Comodines4tos.length == 0">
+												-
+											</span>
+										</p>
+										<p style="font-size: 11px;">
+											Comodines 8vos:
+											<span *ngFor="let c of selectedParticipant.Comodines8vos; index as i">
+												<i *ngIf="c.puntos > 0" class="now-ui-icons ui-1_check comodin-scored"></i>
+												<i *ngIf="c.puntos == 0" class="now-ui-icons ui-1_simple-remove comodin-missed"></i>
+											</span>
+											<span *ngIf="selectedParticipant.Comodines8vos.length == 0">
+												-
+											</span>
+										</p>
+										<p style="font-size: 11px;">
+											Comodines 1era Ronda:
+											<span *ngFor="let c of selectedParticipant.Comodines1eraRonda; index as i">
+												<i *ngIf="c.puntos > 0" class="now-ui-icons ui-1_check comodin-scored"></i>
+												<i *ngIf="c.puntos == 0" class="now-ui-icons ui-1_simple-remove comodin-missed"></i>
+											</span>
+											<span *ngIf="selectedParticipant.Comodines1eraRonda.length == 0">
+												-
+											</span>
+										</p>
+									</div>
+									<div class="card-body">
+						
+										<div *ngFor="let g of selectedParticipant.GroupedInfo; index as i">
+						
+											<h6 class="text-center"><span *ngIf="g.Grupo !='8vos' && g.Grupo !='4tos'">GRUPO </span>{{g.Grupo}}</h6>
+						
+											<div class="table-responsive" *ngIf="g.Pronosticos.length > 0">
+												<table class="table">
+													<thead class=" text-primary">
+														<th class="text-center">
+														</th>
+														<th class="text-center">
+														</th>
+														<th class="text-center">
+														</th>
+														<th class="text-center">
+														</th>
+														<th class="text-center">
+															<b>Pts</b>
+														</th>
+													</thead>
+													<tbody>
+														<tr *ngFor="let p of g.Pronosticos; index as i" style="width:100%">
+															<td class="cell text-center">
+																{{p.t1}} <b *ngIf="p.GanadorEnPenales && p.GanadorEnPenales == p.t1">(GP)</b>
+															</td>
+															<td class="cell text-center">
+																{{p.Marcador1}}
+															</td>
+															<td class="cell text-center">
+																{{p.Marcador2}}
+															</td>
+															<td class="cell text-center">
+																{{p.t2}} <b *ngIf="p.GanadorEnPenales && p.GanadorEnPenales == p.t2">(GP)</b>
+															</td>
+															<td class="cell text-center">
+																<b *ngIf="p.Available">
+																	{{p.Puntos}}
+																	<p style="font-size:8px; color:#f96332" *ngIf="p.Comodin != ''">( {{p.Comodin}} )</p>
+																</b>
+																<b *ngIf="!p.Available">
+																	-
+																</b>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div *ngIf="g.Pronosticos.length == 0" class="text-center">
+												<p>No hay pronósticos todavía.</p>
+											</div>
+										</div>
+						
+									</div>
+								</div>
+							</div>
+						</div>
+					</ng-template>
+				</ngb-tab>
+				<ngb-tab>
+					<ng-template ngbTabTitle>
+						<b>Compare</b> Partidos
+					</ng-template>
+					<ng-template ngbTabContent>
+						<div class="row">
+							<div class="col-md-12">
+
+								<div class="text-center" style="margin-top:20px;">
+									<ngb-tabset type="pills">
+										<ngb-tab  *ngFor="let g of groupedMatches; index as i" title="{{g.Grupo}}">
+											<ng-template ngbTabContent>
+												<div class="card" style="margin-top:10px;">
+													<div class="card-header text-center" style="padding-top: 0px">
+														<h4>{{g.Grupo}}</h4>
+													</div>
+													<div class="card-body container-fluid" style="padding:30px; padding-top: 0;">
+														<div *ngFor="let m of g.Matches; index as i">
+												
+															<div class="row" (click)="ShowResults(m)" [ngClass]="GetClass(m.IDPartido, g.Grupo)" style="border-bottom: 1px solid #ededed; padding-top:10px; padding-bottom:10px;">
+																<div class="col-5 col-sm-5 col-md-5">{{m.Team1}}</div>
+																<div class="col-2 col-sm-2 col-md-2">-</div>
+																<div class="col-5 col-sm-5 col-md-5">{{m.Team2}}</div>
+															</div>
+												
+														</div>
+													</div>
+												</div>
+
+												<div class="card" *ngIf="isGroupSelected">
+													<div class="card-header text-center" style="padding-top: 0px">
+														<h4>{{selectedMatchToCompare.Team1}}
+															<small>vs</small> {{selectedMatchToCompare.Team2}}</h4>
+													</div>
+													<div class="card-body container-fluid" style="padding:30px; padding-top: 0;">
+												
+														<table class="table">
+															<thead class=" text-primary">
+																<th class="text-center">
+																</th>
+																<th class="text-center">
+																</th>
+																<th></th>
+																<th class="text-center">
+																</th>
+																<!-- <th class="text-center">
+																	<b>Pts</b>
+																</th> -->
+															</thead>
+															<tbody>
+																<tr *ngFor="let p of selectedMatchToCompare.Pronosticos; index as i" style="width:100%">
+																	<td class="cell text-center">
+																		{{p.Nombre}}
+																	</td>
+																	<td class="cell text-center">
+																		<b>{{p.Pronostico.Marcador1}} </b>
+																	</td>
+																	<td class="cell text-center">-</td>
+																	<td class="cell text-center">
+																		<b>{{p.Pronostico.Marcador2}} </b>
+																	</td>
+																	<td>
+																		<b style="font-size:10px;" *ngIf="p.Pronostico.GanadorEnPenales && p.Pronostico.GanadorEnPenales !=''">(GP): {{p.Pronostico.GanadorEnPenales}}</b>
+																	</td>
+																	<!-- <td class="cell text-center">
+																		<b *ngIf="p.Pronostico.Available">
+																			{{p.Pronostico.Puntos}}
+																			<p style="font-size:8px; color:#f96332" *ngIf="p.Pronostico.Comodin != ''">( {{p.Pronostico.Comodin}} )</p>
+																		</b>
+																		<b *ngIf="!p.Pronostico.Available">
+																			-
+																		</b>
+																	</td> -->
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</ng-template>
+										</ngb-tab>
+									</ngb-tabset>
+								</div>
+								
+							</div>
+						</div>
+					</ng-template>
+				</ngb-tab>
+			</ngb-tabset>
+		</div>
+	</div>
+</div>
